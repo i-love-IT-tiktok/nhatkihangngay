@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhật Ký Hàng Ngày</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .editor-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
+        }
+
+        .editor-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input[type="date"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="date"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-clear {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .btn-clear:hover {
+            background: #e0e0e0;
+        }
+
+        .entries-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .entries-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .entries-header h2 {
+            color: #333;
+            font-size: 1.3em;
+        }
+
+        .search-box {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            width: 250px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .entry-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .entry-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .entry-date {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .entry-title {
+            color: #333;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .entry-content {
+            color: #555;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .btn-edit:hover {
+            background: #e3f2fd;
+        }
+
+        .btn-delete:hover {
+            background: #ffebee;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #4caf50;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #f44336;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .entries-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📔 Nhật Ký Hàng Ngày</h1>
+            <p>Lưu lại những khoảnh khắc và suy nghĩ của bạn</p>
+        </header>
+
+        <!-- Phần viết nhật ký -->
+        <div class="editor-section">
+            <h2 id="editorTitle">✍️ Viết nhật ký mới</h2>
+            <input type="hidden" id="editId">
+            
+            <div class="form-group">
+                <label for="entryDate">Ngày</label>
+                <input type="date" id="entryDate">
+            </div>
+
+            <div class="form-group">
+                <label for="entryTitle">Tiêu đề</label>
+                <input type="text" id="entryTitle" placeholder="Hôm nay có gì đặc biệt?">
+            </div>
+
+            <div class="form-group">
+                <label for="entryContent">Nội dung</label>
+                <textarea id="entryContent" placeholder="Viết suy nghĩ, cảm xúc của bạn ở đây..."></textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-save" onclick="saveEntry()">💾 Lưu nhật ký</button>
+                <button class="btn-clear" onclick="clearForm()">🗑️ Xóa form</button>
+            </div>
+        </div>
+
+        <!-- Danh sách nhật ký -->
+        <div class="entries-section">
+            <div class="entries-header">
+                <h2>📚 Nhật ký của bạn (<span id="count">0</span>)</h2>
+                <input type="text" class="search-box" id="searchBox" placeholder="🔍 Tìm kiếm..." oninput="renderEntries()">
+            </div>
+            <div id="entriesList"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Lấy dữ liệu từ localStorage
+        let entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+
+        // Khởi tạo ngày hôm nay
+        document.getElementById('entryDate').valueAsDate = new Date();
+
+        // Lưu nhật ký
+        function saveEntry() {
+            const editId = document.getElementById('editId').value;
+            const date = document.getElementById('entryDate').value;
+            const title = document.getElementById('entryTitle').value.trim();
+            const content = document.getElementById('entryContent').value.trim();
+
+            // Validate
+            if (!date) {
+                showToast('Vui lòng chọn ngày!', true);
+                return;
+            }
+            if (!title && !content) {
+                showToast('Vui lòng nhập tiêu đề hoặc nội dung!', true);
+                return;
+            }
+
+            if (editId) {
+                // Cập nhật entry
+                const index = entries.findIndex(e => e.id == editId);
+                if (index !== -1) {
+                    entries[index] = {
+                        ...entries[index],
+                        date,
+                        title: title || 'Không có tiêu đề',
+                        content,
+                        updatedAt: new Date().toISOString()
+                    };
+                    showToast('Đã cập nhật nhật ký! ✏️');
+                }
+            } else {
+                // Thêm entry mới
+                const newEntry = {
+                    id: Date.now(),
+                    date,
+                    title: title || 'Không có tiêu đề',
+                    content,
+                    createdAt: new Date().toISOString()
+                };
+                entries.unshift(newEntry);
+                showToast('Đã lưu nhật ký! 🎉');
+            }
+
+            // Sắp xếp theo ngày mới nhất
+            entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            // Lưu vào localStorage
+            localStorage.setItem('diaryEntries', JSON.stringify(entries));
+
+            clearForm();
+            renderEntries();
+        }
+
+        // Xóa form
+        function clearForm() {
+            document.getElementById('editId').value = '';
+            document.getElementById('entryDate').valueAsDate = new Date();
+            document.getElementById('entryTitle').value = '';
+            document.getElementById('entryContent').value = '';
+            document.getElementById('editorTitle').textContent = '✍️ Viết nhật ký mới';
+        }
+
+        // Chỉnh sửa entry
+        function editEntry(id) {
+            const entry = entries.find(e => e.id == id);
+            if (!entry) return;
+
+            document.getElementById('editId').value = entry.id;
+            document.getElementById('entryDate').value = entry.date;
+            document.getElementById('entryTitle').value = entry.title;
+            document.getElementById('entryContent').value = entry.content;
+            document.getElementById('editorTitle').textContent = '✏️ Chỉnh sửa nhật ký';
+
+            // Cuộn lên đầu trang
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Xóa entry
+        function deleteEntry(id) {
+            if (!confirm('Bạn có chắc muốn xóa nhật ký này?')) return;
+
+            entries = entries.filter(e => e.id != id);
+            localStorage.setItem('diaryEntries', JSON.stringify(entries));
+            renderEntries();
+            showToast('Đã xóa nhật ký! 🗑️');
+        }
+
+        // Format ngày
+        function formatDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            const days = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+            const dayName = days[date.getDay()];
+            return `${dayName}, ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        }
+
+        // Hiển thị danh sách
+        function renderEntries() {
+            const list = document.getElementById('entriesList');
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase().trim();
+
+            let filtered = entries;
+            if (searchTerm) {
+                filtered = entries.filter(e =>
+                    e.title.toLowerCase().includes(searchTerm) ||
+                    e.content.toLowerCase().includes(searchTerm) ||
+                    e.date.includes(searchTerm)
+                );
+            }
+
+            document.getElementById('count').textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📝</div>
+                        <p>${searchTerm ? 'Không tìm thấy nhật ký nào' : 'Chưa có nhật ký nào. Hãy viết cái đầu tiên!'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map(entry => `
+                <div class="entry-card">
+                    <div class="entry-header">
+                        <div>
+                            <div class="entry-date">📅 ${formatDate(entry.date)}</div>
+                        </div>
+                        <div class="entry-actions">
+                            <button class="btn-icon btn-edit" onclick="editEntry(${entry.id})" title="Sửa">✏️</button>
+                            <button class="btn-icon btn-delete" onclick="deleteEntry(${entry.id})" title="Xóa">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="entry-title">${escapeHtml(entry.title)}</div>
+                    <div class="entry-content">${escapeHtml(entry.content)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Escape HTML để tránh XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Hiển thị thông báo
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => {
+                toast.className = 'toast' + (isError ? ' error' : '');
+            }, 2500);
+        }
+
+        // Khởi tạo
+        renderEntries();
+    </script>
+</body>
+</html>
